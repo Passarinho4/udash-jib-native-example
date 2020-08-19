@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'scala'
+    id 'war'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.12.12'
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.31.v20200723'
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.31.v20200723'
+    compile group: 'io.udash', name: 'udash-rest_2.12', version: '0.9.0-M2'
+    compile group: 'org.graalvm.nativeimage', name: 'svm', version: '20.1.0'
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.tegess.Main"
+    }
+
+    from {
+        configurations.compile.collect {
+            if (it.name.endsWith(".gz")) {
+                return it
+            } else {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+    }
+}
